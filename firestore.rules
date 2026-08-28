@@ -1,0 +1,27 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Feedbacks Collection
+    match /feedbacks/{document=**} {
+      // Only authenticated users (including anonymous) can create feedback
+      allow create: if request.auth != null;
+      
+      // Only admins (users logged in with email/password) can read feedback
+      allow read: if request.auth != null && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+    
+    // Event Mistakes Collection
+    match /event_mistakes/{document=**} {
+      // Only admins can read/write event mistakes
+      allow read, write: if request.auth != null && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+    
+    // Admin Notes Collection
+    match /admin_notes/{document=**} {
+      // Only admins can read/write admin notes
+      allow read, write: if request.auth != null && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+  }
+}

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Event Feedback</title>
+    <meta name="description" content="Admin dashboard to view feedback and log event mistakes.">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav style="display: flex; justify-content: space-between; align-items: center;">
+        <a href="index.html">&larr; Back to Public Form</a>
+        <button id="logoutBtn" style="display: none; padding: 0.5rem 1rem; width: auto; font-size: 0.9rem; background-color: #ef4444;">Logout</button>
+    </nav>
+    <div class="container admin-container">
+        <h1>Admin Dashboard</h1>
+        
+        <div id="adminStatus" class="message"></div>
+
+        <!-- Login Section -->
+        <div id="loginSection" class="glass-panel" style="max-width: 400px; margin: 2rem auto;">
+            <h2>Admin Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="adminEmail">Email</label>
+                    <input type="email" id="adminEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" id="adminPassword" required>
+                </div>
+                <button type="submit" id="loginBtn">Login</button>
+            </form>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboardSection" style="display: none;">
+            <div class="grid-container">
+            <!-- Left Column: Log Mistakes -->
+            <div class="glass-panel">
+                <h2>Log Event Issue</h2>
+                <form id="mistakeForm">
+                    <div class="form-group">
+                        <label for="mistakeCategory">Category</label>
+                        <select id="mistakeCategory" required>
+                            <option value="" disabled selected>Select an issue category...</option>
+                            <option value="Crowd Management">Crowd Management</option>
+                            <option value="Bad Sound Quality">Bad Sound Quality</option>
+                            <option value="Logistics">Logistics</option>
+                            <option value="Ticketing">Ticketing</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mistakeNotes">Notes</label>
+                        <textarea id="mistakeNotes" placeholder="Detailed description of what went wrong..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" id="mistakeSubmitBtn">Log Issue to Database</button>
+                </form>
+            </div>
+
+            <!-- Right Column: View Mistakes -->
+            <div class="glass-panel" style="display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2>Logged Issues</h2>
+                    <button id="refreshMistakesBtn" style="width: auto; padding: 0.5rem 1rem; font-size: 0.8rem; margin-bottom: 1.5rem;">Refresh</button>
+                </div>
+                <div id="mistakesList" style="flex: 1; overflow-y: auto; max-height: 400px; padding-right: 0.5rem;">
+                    <p class="subtitle" style="font-size:0.9rem;">Loading internal issues...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-container">
+            <!-- Left Column: Add Note -->
+            <div class="glass-panel">
+                <h2>Admin Discussion & Notes</h2>
+                <form id="noteForm">
+                    <div class="form-group">
+                        <label for="noteContent">New Note</label>
+                        <textarea id="noteContent" placeholder="Type your discussion or note here..." required style="min-height: 80px;"></textarea>
+                    </div>
+                    <button type="submit" id="noteSubmitBtn">Post Note to Database</button>
+                </form>
+            </div>
+
+            <!-- Right Column: View Notes -->
+            <div class="glass-panel" style="display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2>Recent Notes</h2>
+                    <button id="refreshNotesBtn" style="width: auto; padding: 0.5rem 1rem; font-size: 0.8rem; margin-bottom: 1.5rem;">Refresh</button>
+                </div>
+                <div id="notesList" style="flex: 1; overflow-y: auto; max-height: 300px; padding-right: 0.5rem;">
+                    <p class="subtitle" style="font-size:0.9rem;">Loading notes...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Width: View Feedbacks -->
+        <div class="glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Attendee Feedback</h2>
+                <button id="refreshFeedbackBtn" style="width: auto; padding: 0.5rem 1rem; font-size: 0.8rem; margin-bottom: 1.5rem;">Refresh Data</button>
+            </div>
+            <div id="feedbackList" class="grid-container" style="max-height: 600px; overflow-y: auto; padding-right: 0.5rem;">
+                <p class="subtitle" style="font-size:0.9rem;">Loading feedback...</p>
+            </div>
+        </div>
+        </div> <!-- End Dashboard Section -->
+    </div>
+
+    <!-- Admin Application Logic -->
+    <script type="module" src="admin.js"></script>
+</body>
+</html>
