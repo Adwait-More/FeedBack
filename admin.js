@@ -63,6 +63,7 @@ loginForm.addEventListener('submit', async (e) => {
         await signInWithEmailAndPassword(auth, email, password);
         showStatus("Logged in successfully.", "success");
         loginForm.reset();
+        document.getElementById('adminPassword').type = 'password'; // Reset type on success
     } catch (error) {
         console.error("Login error:", error);
         showStatus("Invalid email or password.", "error");
@@ -71,6 +72,15 @@ loginForm.addEventListener('submit', async (e) => {
         loginBtn.textContent = 'Login';
     }
 });
+
+// Show Password Toggle
+const showPasswordToggle = document.getElementById('showPasswordToggle');
+if (showPasswordToggle) {
+    showPasswordToggle.addEventListener('change', (e) => {
+        const adminPassword = document.getElementById('adminPassword');
+        adminPassword.type = e.target.checked ? 'text' : 'password';
+    });
+}
 
 // Logout Handler
 logoutBtn.addEventListener('click', async () => {
