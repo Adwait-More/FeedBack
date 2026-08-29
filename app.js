@@ -22,12 +22,12 @@ const ratingTexts = {
     '5': '⭐⭐⭐⭐⭐ 5 Stars — Absolutely Amazing! 🎉'
 };
 
-// Update rating label on selection
+// Update rating label on selection with bouncy pop active class
 document.querySelectorAll('input[name="rating"]').forEach(radio => {
     radio.addEventListener('change', (e) => {
         if (ratingLabel) {
             ratingLabel.textContent = ratingTexts[e.target.value] || 'Rating selected';
-            ratingLabel.style.color = 'var(--text-main)';
+            ratingLabel.className = 'star-feedback-label active';
         }
     });
 });
@@ -48,7 +48,7 @@ onAuthStateChanged(auth, (user) => {
 // Helper to show status messages with playful badges
 function showStatus(message, type) {
     const icon = type === 'success' ? '🎉' : '⚠️';
-    statusMessage.innerHTML = `<span style="font-size: 1.25rem;">${icon}</span><span>${message}</span>`;
+    statusMessage.innerHTML = `<span style="font-size: 1.4rem;">${icon}</span><span>${message}</span>`;
     statusMessage.className = `message ${type}`;
     
     // Clear message after 5 seconds
@@ -95,7 +95,7 @@ feedbackForm.addEventListener('submit', async (e) => {
         if (ratingElement) ratingElement.checked = false;
         if (ratingLabel) {
             ratingLabel.textContent = 'Select your rating';
-            ratingLabel.style.color = 'var(--text-muted)';
+            ratingLabel.className = 'star-feedback-label';
         }
         
     } catch (error) {
