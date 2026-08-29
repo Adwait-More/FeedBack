@@ -11,15 +11,33 @@ import {
 const feedbackForm = document.getElementById('feedbackForm');
 const submitBtn = document.getElementById('submitBtn');
 const statusMessage = document.getElementById('statusMessage');
+const ratingLabel = document.getElementById('ratingLabel');
 let isAuthReady = false;
+
+const ratingTexts = {
+    '1': '⭐ 1 Star — Needs Improvement',
+    '2': '⭐⭐ 2 Stars — Fair Experience',
+    '3': '⭐⭐⭐ 3 Stars — Good Event',
+    '4': '⭐⭐⭐⭐ 4 Stars — Great Vibes!',
+    '5': '⭐⭐⭐⭐⭐ 5 Stars — Absolutely Amazing! 🎉'
+};
+
+// Update rating label on selection
+document.querySelectorAll('input[name="rating"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        if (ratingLabel) {
+            ratingLabel.textContent = ratingTexts[e.target.value] || 'Rating selected';
+            ratingLabel.style.color = 'var(--text-main)';
+        }
+    });
+});
 
 // 1. Silent Anonymous Authentication
 onAuthStateChanged(auth, (user) => {
     if (user) {
         isAuthReady = true;
-        console.log("Authenticated silently as anonymous user.");
+        console.log("Authenticated silently as anonymous attendee.");
     } else {
-        // Trigger anonymous sign in if no user is present
         signInAnonymously(auth).catch((error) => {
             console.error("Auth error:", error);
             showStatus("Failed to establish secure connection. Please refresh.", "error");
@@ -27,10 +45,12 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Helper to show status messages in the UI
+// Helper to show status messages with playful badges
 function showStatus(message, type) {
-    statusMessage.textContent = message;
+    const icon = type === 'success' ? '🎉' : '⚠️';
+    statusMessage.innerHTML = `<span style="font-size: 1.25rem;">${icon}</span><span>${message}</span>`;
     statusMessage.className = `message ${type}`;
+    
     // Clear message after 5 seconds
     setTimeout(() => {
         statusMessage.className = 'message';
@@ -39,23 +59,19 @@ function showStatus(message, type) {
 
 // 2. Form Submission Logic
 feedbackForm.addEventListener('submit', async (e) => {
-    e.preventDefault(); // Prevent page reload
+    e.preventDefault();
     
-    // Ensure Firebase auth is completed before allowing writes
     if (!isAuthReady) {
-        showStatus("Initializing secure connection, please wait a moment...", "error");
+        showStatus("Connecting to secure server, please wait a moment...", "error");
         return;
     }
 
-    // Gather form data
     const experience = document.getElementById('experience').value.trim();
     const improvements = document.getElementById('improvements').value.trim();
-    
-    // Get the checked radio button value for rating
     const ratingElement = document.querySelector('input[name="rating"]:checked');
     
     if (!ratingElement) {
-        showStatus("Please select a star rating.", "error");
+        showStatus("Please choose a star rating!", "error");
         return;
     }
 
@@ -63,29 +79,30 @@ feedbackForm.addEventListener('submit', async (e) => {
 
     // Disable button to prevent double submission
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting Feedback...';
+    submitBtn.innerHTML = `<span>Submitting Feedback...</span> <span class="btn-icon-bubble">⏳</span>`;
 
     try {
-        // Firebase Firestore Query: Add a new document to the 'feedbacks' collection
         await addDoc(collection(db, 'feedbacks'), {
             experience: experience,
             improvements: improvements,
             rating: rating,
-            createdAt: serverTimestamp() // Uses secure Firebase server time
+            createdAt: serverTimestamp()
         });
 
-        // Show success and clear the form
-        showStatus("Thank you for your valuable feedback!", "success");
+        showStatus("Thank you! Your feedback has been recorded.", "success");
         feedbackForm.reset();
         
-        // Uncheck the star rating visually
         if (ratingElement) ratingElement.checked = false;
+        if (ratingLabel) {
+            ratingLabel.textContent = 'Select your rating';
+            ratingLabel.style.color = 'var(--text-muted)';
+        }
         
     } catch (error) {
         console.error("Error writing document: ", error);
         showStatus("An error occurred while submitting. Please try again.", "error");
     } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit Feedback';
+        submitBtn.innerHTML = `<span>Send Feedback</span> <span class="btn-icon-bubble">&rarr;</span>`;
     }
 });
